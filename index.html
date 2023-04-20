@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Game</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <!-- Add your HTML content here -->
+    <div id="game-world" style="width: 800px; height: 600px; border: 1px solid black; position: relative;">
+        <div id="character" style="width: 50px; height: 50px; background-color: red; position: absolute; left: 0; top: 0;">
+        </div>
+    </div>
+
+    <script>
+        // Add your JavaScript code here
+        function moveCharacter(x, y) {
+            const character = document.getElementById('character');
+            character.style.left = x + 'px';
+            character.style.top = y + 'px';
+        }
+
+        const gameWorld = document.getElementById('game-world');
+        gameWorld.addEventListener('mousemove', (event) => {
+            const x = event.clientX - gameWorld.offsetLeft;
+            const y = event.clientY - gameWorld.offsetTop;
+            moveCharacter(x, y);
+        });
+    </script>
+</body>
+</html>
