@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Game</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <!-- Add your HTML content here -->
+    <div id="game-world" style="width: 800px; height: 600px; border: 1px solid black; position: relative;">
+        <div id="character" style="width: 50px; height: 50px; background-color: red; position: absolute; left: 0; top: 0;">
+        </div>
+    </div>
+
+    <script>
+        // Add your JavaScript code here
+        function moveCharacter(x, y) {
+            const character = document.getElementById('character');
+            character.style.left = x + 'px';
+            character.style.top = y + 'px';
+        }
+
+        const gameWorld = document.getElementById('game-world');
+        gameWorld.addEventListener('mousemove', (event) => {
+            const x = event.clientX - gameWorld.offsetLeft;
+            const y = event.clientY - gameWorld.offsetTop;
+            moveCharacter(x, y);
+        });
+
+        function createObject(x, y) {
+            const obj = document.createElement('div');
+            obj.style.width = '30px';
+            obj.style.height = '30px';
+            obj.style.backgroundColor = 'blue';
+            obj.style.position = 'absolute';
+            obj.style.left = x + 'px';
+            obj.style.top = y + 'px';
+
+            gameWorld.appendChild(obj);
+        }
+
+        // Event listener for left-click events
+        document.addEventListener('click', (event) => {
+            if (event.button === 0) { // Left-click
+                spawnObject(event.clientX, event.clientY);
+            }
+        });
+
+        // Function to send a request to spawn an object
+        async function spawnObject(x, y) {
+            const response = await fetch('/api/spawn_object', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ x: x, y: y })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                console.log('Object spawned successfully');
+                createObject(x, y);
+            } else {
+                console.log('Failed to spawn object:', data.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

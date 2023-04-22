@@ -1,23 +1,32 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
+from char_logic import Character
+from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='static')
+CORS(app)
 
-@app.route('/move_character', methods=['POST'])
-def move_character():
+character = Character()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/api/spawn_object', methods=['POST'])
+def api_spawn_object():
     data = request.get_json()
-    x_position = data.get('x_position')
-    y_position = data.get('y_position')
+    x = data.get('x')
+    y = data.get('y')
 
-    # Process the new character position in your game logic here.
+    if x is not None and y is not None:
+        character.spawn_object(x, y)
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False, message="Invalid coordinates")
 
-    response = {
-        'status': 'success',
-        'message': 'Character moved successfully.',
-        'x_position': x_position,
-        'y_position': y_position
-    }
-
-    return jsonify(response)
+@app.route('/api/get_objects', methods=['GET'])
+def api_get_objects():
+    objects = character.get_objects()
+    return jsonify(objects)
 
 if __name__ == '__main__':
     app.run(debug=True)
